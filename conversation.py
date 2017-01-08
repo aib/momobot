@@ -64,6 +64,6 @@ def message(bot, update):
 
 def init(updater, group_ids):
 	global _db
-	_db = MessageDB("db/conv.db", 1000)
+	_db = MessageDB("db/conv.db", 65535)
 	_db.load()
 	updater.dispatcher.add_handler(telegram.ext.MessageHandler(MyFilter(group_ids), message))
