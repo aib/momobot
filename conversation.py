@@ -44,11 +44,14 @@ class MyFilter(telegram.ext.filters.BaseFilter):
 		self._group_ids = group_ids
 
 	def filter(self, message):
-		if message.chat.id in self._group_ids:
+		if message.chat.type == 'private':
 			return True
-		else:
-			_logger.info("Ignoring chat id %d", message.chat.id)
-			return False
+
+		if message.chat.type == 'group' and message.chat.id in self._group_ids:
+			return True
+
+		_logger.info("Ignoring chat id %d", message.chat.id)
+		return False
 
 def message(bot, update):
 	text = update.message.text
@@ -56,15 +59,23 @@ def message(bot, update):
 	if text.startswith("/"):
 		return
 
-	if "momobot" in text.lower():
-		reply = _db.get_random_text()
+	if update.message.chat.type == 'private':
+		_respond(bot, update.message.chat.id)
+		return
 
-		time.sleep(random.random())
-		bot.sendChatAction(chat_id=update.message.chat.id, action=telegram.chataction.ChatAction.TYPING)
-		time.sleep(min(4, len(reply) / 10.0))
-		bot.sendMessage(chat_id=update.message.chat.id, text=reply)
-	else:
-		_db.add_text(text)
+	if update.message.chat.type == 'group' and "momobot" in text.lower():
+		_respond(bot, update.message.chat.id)
+		return
+
+	_db.add_text(text)
+
+def _respond(bot, chat_id):
+	response = _db.get_random_text()
+
+	time.sleep(random.random())
+	bot.sendChatAction(chat_id=chat_id, action=telegram.chataction.ChatAction.TYPING)
+	time.sleep(min(4, len(response) / 10.0))
+	bot.sendMessage(chat_id=chat_id, text=response)
 
 def init(updater, group_ids):
 	global _db
