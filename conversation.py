@@ -52,6 +52,10 @@ class MyFilter(telegram.ext.filters.BaseFilter):
 
 def message(bot, update):
 	text = update.message.text
+
+	if text.startswith("/"):
+		return
+
 	if "momobot" in text.lower():
 		reply = _db.get_random_text()
 
