@@ -61,6 +61,8 @@ def message(bot, update):
 
 	if update.message.chat.type == 'private':
 		_respond(bot, update.message.chat.id)
+		if "momobot" not in text.lower():
+			_db.add_text(text)
 		return
 
 	if update.message.chat.type == 'group' and "momobot" in text.lower():
