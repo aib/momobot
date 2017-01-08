@@ -65,11 +65,12 @@ def message(bot, update):
 			_db.add_text(text)
 		return
 
-	if update.message.chat.type == 'group' and "momobot" in text.lower():
-		_respond(bot, update.message.chat.id)
+	if update.message.chat.type == 'group':
+		if "momobot" in text.lower():
+			_respond(bot, update.message.chat.id)
+		else:
+			_db.add_text(text)
 		return
-
-	_db.add_text(text)
 
 def _respond(bot, chat_id):
 	response = _db.get_random_text()
