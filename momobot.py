@@ -15,7 +15,7 @@ def main():
 	_logger.debug("Token is %s", token)
 
 	tg_updater = telegram.ext.Updater(token=token)
-	conversation.init(tg_updater, [int(config.from_file('db/momoloji.id'))])
+	conversation.init(tg_updater, [])
 	tg_updater.start_polling()
 
 if __name__ == '__main__':
